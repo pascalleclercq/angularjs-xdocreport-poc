@@ -86,9 +86,8 @@ public class ConverterServiceImpl
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//    	if(request.document!=null){
-//    		System.err.println("nb bytes "+request.document.length);
-//    	}
+
+    	
     	ResponseBuilder responseBuilder = Response.ok(  );
     	return responseBuilder.build();
 
