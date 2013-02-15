@@ -40,7 +40,7 @@ function XDocReportCtrl($scope, $http) {
 	};
 
 	$scope.convert = function() {
-		$http.post('toto/convert', $scope.convertRequest).success(
+		$http.post('jaxrs/convert', $scope.convertRequest).success(
 				function(code, response) {
 					alert(code+" - "+response);
 				});
