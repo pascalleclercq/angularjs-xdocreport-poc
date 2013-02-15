@@ -8,8 +8,10 @@ public class ConvertRequest {
 	public String outputFormat;
 //  TODO ?
 //	public DataSource content;
+	public String mimeType;
 	public String document;
 	public String via;
 	public boolean download;
+	public String fileName;
 
 }

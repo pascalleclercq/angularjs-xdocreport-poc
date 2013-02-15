@@ -28,6 +28,8 @@ function XDocReportCtrl($scope, $http) {
 							+ "size: " + f.size
 							+ " bytes\n" + "starts with: " + base64String);
 */					   
+					$scope.convertRequest.convertRequest.fileName = f.name;
+					$scope.convertRequest.convertRequest.mimeType = f.type;
 					$scope.convertRequest.convertRequest.document = base64String;
 				};
 				r.readAsArrayBuffer(f);
@@ -40,7 +42,7 @@ function XDocReportCtrl($scope, $http) {
 	$scope.convert = function() {
 		$http.post('toto/convert', $scope.convertRequest).success(
 				function(code, response) {
-					alert(response);
+					alert(code+" - "+response);
 				});
 	};
 }

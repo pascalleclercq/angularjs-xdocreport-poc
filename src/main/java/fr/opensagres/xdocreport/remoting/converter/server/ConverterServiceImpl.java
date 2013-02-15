@@ -24,22 +24,35 @@
  */
 package fr.opensagres.xdocreport.remoting.converter.server;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.codec.binary.Base64;
 
+import fr.opensagres.xdocreport.converter.ConverterRegistry;
 import fr.opensagres.xdocreport.converter.ConverterTypeTo;
+import fr.opensagres.xdocreport.converter.IConverter;
+import fr.opensagres.xdocreport.converter.Options;
+import fr.opensagres.xdocreport.converter.XDocConverterException;
+import fr.opensagres.xdocreport.core.document.DocumentKind;
+import fr.opensagres.xdocreport.core.io.IOUtils;
+import fr.opensagres.xdocreport.core.logging.LogUtils;
+import fr.opensagres.xdocreport.core.utils.Assert;
+import fr.opensagres.xdocreport.core.utils.HttpHeaderUtils;
 import fr.opensagres.xdocreport.remoting.domain.ConvertRequest;
 
 /**
@@ -49,6 +62,7 @@ import fr.opensagres.xdocreport.remoting.domain.ConvertRequest;
 public class ConverterServiceImpl
 {
 
+	private static final Logger LOGGER = LogUtils.getLogger(ConverterServiceImpl.class);
 	@GET
     @Produces( MediaType.APPLICATION_JSON )
     @Path( "/list" )
@@ -70,10 +84,11 @@ public class ConverterServiceImpl
     @Path( "/convert" )
     public Response convert( final ConvertRequest request )
     {
-    	System.out.println(request);
-    	System.err.println(request.document);
-    	byte[] flux =Base64.decodeBase64(request.document.getBytes());
+//    	System.out.println(request);
+//    	System.err.println(request.document);
     	
+    	final byte[] flux =Base64.decodeBase64(request.document.getBytes());
+    /*	
     	try {
 			FileOutputStream fout = new FileOutputStream("temp.ODT");
 			fout.write(flux);
@@ -86,95 +101,94 @@ public class ConverterServiceImpl
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+*/
     	
-    	ResponseBuilder responseBuilder = Response.ok(  );
-    	return responseBuilder.build();
 
-//        try
-//        {
-//            Assert.notNull( request.content, "file is required" );
-//            Assert.notNull( request.outputFormat, "outputFormat is required" );
-//            Assert.notNull( request.via, "via is required" );
-//            // 1) Get the converter type to use
-//            ConverterTypeTo to = ConverterTypeTo.valueOf( request.outputFormat );
-//            if ( to == null )
-//            {
-//                throw new XDocConverterException( "Converter service cannot support the output format=" + request.outputFormat );
-//            }
-//
-//            // 2) retrieve the document kind from the input mimeType
-//            String mimeType = request.content.getContentType();
-//            DocumentKind documentKind = DocumentKind.fromMimeType( mimeType );
-//            if ( documentKind == null )
-//            {
-//                throw new XDocConverterException( "Converter service cannot support mime-type=" + mimeType );
-//            }
-//
-//            // 3) Get the converter from the registry
-//            final Options options = Options.getFrom( documentKind ).to( to ).via( request.via );
-//            final IConverter converter = ConverterRegistry.getRegistry().findConverter( options );
-//
-//            // 4) Create an instance of JAX-RS StreamingOutput to convert the inputstream and set the result in the
-//            // response stream.
-//            StreamingOutput output = new StreamingOutput()
-//            {
-//                public void write( OutputStream out )
-//                    throws IOException, WebApplicationException
-//                {
-//                    try
-//                    {
-//                        long start = System.currentTimeMillis();
-//                        converter.convert( request.content.getInputStream(), out, options );
-//
-//                        if ( LOGGER.isLoggable( Level.INFO ) )
-//                        {
-//                            LOGGER.info( "Time spent to convert " + request.content.getName() + ": "
-//                                + ( System.currentTimeMillis() - start ) + " ms using " + request.via );
-//                        }
-//                    }
-//                    catch ( XDocConverterException e )
-//                    {
-//
-//                        if ( LOGGER.isLoggable( Level.SEVERE ) )
-//                        {
-//                            LOGGER.log( Level.SEVERE, "Converter error", e );
-//                        }
-//                        throw new WebApplicationException( e );
-//                    }
-//                    catch ( RuntimeException e )
-//                    {
-//
-//                        if ( LOGGER.isLoggable( Level.SEVERE ) )
-//                        {
-//                            LOGGER.log( Level.SEVERE, "RuntimeException", e );
-//                        }
-//                        throw new WebApplicationException( e );
-//                    }
-//                    finally
-//                    {
-//                        IOUtils.closeQuietly( out );
-//                    }
-//
-//                }
-//            };
-//            // 5) Create the JAX-RS response builder.
-//            ResponseBuilder responseBuilder = Response.ok( output, MediaType.valueOf( to.getMimeType() ) );
-//            if ( request.download )
-//            {
-//                // The converted document must be downloaded, add teh well content-disposition header.
-//                String fileName = request.content.getName();
-//                responseBuilder.header( HttpHeaderUtils.CONTENT_DISPOSITION_HEADER,
-//                                        HttpHeaderUtils.getAttachmentFileName( getOutputFileName( fileName, to ) ) );
-//            }
-//            return responseBuilder.build();
-//
-//        }
-//        catch ( Exception e )
-//        {
-//            throw new RuntimeException( e );
-//        }
-//        
+        try
+        {
+            Assert.notNull( request.document, "file is required" );
+            Assert.notNull( request.outputFormat, "outputFormat is required" );
+            Assert.notNull( request.via, "via is required" );
+            // 1) Get the converter type to use
+            ConverterTypeTo to = ConverterTypeTo.valueOf( request.outputFormat );
+            if ( to == null )
+            {
+                throw new XDocConverterException( "Converter service cannot support the output format=" + request.outputFormat );
+            }
+
+            // 2) retrieve the document kind from the input mimeType
+            String mimeType = request.mimeType;
+            DocumentKind documentKind = DocumentKind.fromMimeType( mimeType );
+            if ( documentKind == null )
+            {
+                throw new XDocConverterException( "Converter service cannot support mime-type=" + mimeType );
+            }
+
+            // 3) Get the converter from the registry
+            final Options options = Options.getFrom( documentKind ).to( to ).via( request.via );
+            final IConverter converter = ConverterRegistry.getRegistry().findConverter( options );
+
+            // 4) Create an instance of JAX-RS StreamingOutput to convert the inputstream and set the result in the
+            // response stream.
+            StreamingOutput output = new StreamingOutput()
+            {
+                public void write( OutputStream out )
+                    throws IOException, WebApplicationException
+                {
+                    try
+                    {
+                        long start = System.currentTimeMillis();
+                        
+                        converter.convert( new ByteArrayInputStream(flux), out, options );
+
+                        if ( LOGGER.isLoggable( Level.INFO ) )
+                        {
+                            LOGGER.info( "Time spent to convert " + request.fileName + ": "
+                                + ( System.currentTimeMillis() - start ) + " ms using " + request.via );
+                        }
+                    }
+                    catch ( XDocConverterException e )
+                    {
+
+                        if ( LOGGER.isLoggable( Level.SEVERE ) )
+                        {
+                            LOGGER.log( Level.SEVERE, "Converter error", e );
+                        }
+                        throw new WebApplicationException( e );
+                    }
+                    catch ( RuntimeException e )
+                    {
+
+                        if ( LOGGER.isLoggable( Level.SEVERE ) )
+                        {
+                            LOGGER.log( Level.SEVERE, "RuntimeException", e );
+                        }
+                        throw new WebApplicationException( e );
+                    }
+                    finally
+                    {
+                        IOUtils.closeQuietly( out );
+                    }
+
+                }
+            };
+            // 5) Create the JAX-RS response builder.
+            ResponseBuilder responseBuilder = Response.ok( output, MediaType.valueOf( to.getMimeType() ) );
+            if ( request.download )
+            {
+                // The converted document must be downloaded, add teh well content-disposition header.
+                String fileName = request.fileName;
+                responseBuilder.header( HttpHeaderUtils.CONTENT_DISPOSITION_HEADER,
+                                        HttpHeaderUtils.getAttachmentFileName( getOutputFileName( fileName, to ) ) );
+            }
+            return responseBuilder.build();
+
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( e );
+        }
+        
     }
 
     /**
