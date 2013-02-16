@@ -6,12 +6,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ConvertRequest {
 
 	public String outputFormat;
-//  TODO ?
-//	public DataSource content;
 	public String mimeType;
 	public String document;
 	public String via;
-	public boolean download;
+	public boolean download=false;
 	public String fileName;
 
 }

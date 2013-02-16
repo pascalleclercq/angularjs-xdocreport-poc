@@ -16,29 +16,32 @@
 				(Required):</label>
 			<div class="controls">
 				<input type="file" class="file" id="document" class="input-medium"
-					ng-model="convertRequest.convertRequest.content" placeholder="FILE"
+					ng-model="model.convertRequest.content" placeholder="FILE"
 					onchange="angular.element(this).scope().setFiles(this)">
 			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label" for="via">Select a framework:</label>
 			<div class="controls">
 				<input type="text" id="via" class="input-medium"
-					ng-model="convertRequest.convertRequest.via" placeholder="POI">
-			</div>
-			<label class="control-label" for="outputFormat">Select the
-				output format:</label>
-			<div class="controls">
-				<input type="text" id="outputFormat" placeholder="PDF"
-					class="input-medium"
-					ng-model="convertRequest.convertRequest.outputFormat">
-			</div>
-			<div class="controls">
-				<button class="btn btn-primary" ng-click="convert()">Convert!</button>
-
+					ng-model="model.convertRequest.via" placeholder="XWPF">
 			</div>
 		</div>
-	</form>
-
-	</div>
+			<div class="control-group">
+				<label class="control-label" for="outputFormat">Select the
+					output format:</label>
+				<div class="controls">
+					<input type="text" id="outputFormat" placeholder="PDF"
+						class="input-medium"
+						ng-model="model.convertRequest.outputFormat">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<div class="controls">
+					<button class="btn btn-primary" ng-click="convert()">Convert !</button>
+				</div>
+			</div>
 	</form>
 
 	<legend>Report preview</legend>
