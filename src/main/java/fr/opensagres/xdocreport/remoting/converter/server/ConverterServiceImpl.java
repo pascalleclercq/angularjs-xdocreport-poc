@@ -174,13 +174,13 @@ public class ConverterServiceImpl
             };
             // 5) Create the JAX-RS response builder.
             ResponseBuilder responseBuilder = Response.ok( output, MediaType.valueOf( to.getMimeType() ) );
-            if ( request.download )
+           /* if ( request.download )
             {
                 // The converted document must be downloaded, add teh well content-disposition header.
                 String fileName = request.fileName;
                 responseBuilder.header( HttpHeaderUtils.CONTENT_DISPOSITION_HEADER,
                                         HttpHeaderUtils.getAttachmentFileName( getOutputFileName( fileName, to ) ) );
-            }
+            }*/
             return responseBuilder.build();
 
         }
