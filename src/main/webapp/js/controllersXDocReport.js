@@ -23,6 +23,7 @@ function XDocReportCtrl($scope, $http) {
 								model.convertRequest.fileName = f.name;
 								model.convertRequest.mimeType = f.type;
 								model.convertRequest.document = base64String;
+								
 							};
 							r.readAsArrayBuffer(f);
 						} else {
@@ -38,8 +39,28 @@ function XDocReportCtrl($scope, $http) {
 		
 		$http.post('jaxrs/convert', model).success(
 				function(code, response, headers, config) {
-					alert(response);
-					
+					 var arrayBuffer = code;
+
+					 if (arrayBuffer) {
+						 var blob = new Blob([arrayBuffer]);
+						 var blobURLref = window.URL.createObjectURL(blob);
+						 document.getElementById('previewFrame').src=blobURLref;
+					 }	
 				});
 	};
+	
+	var BASE64_MARKER = ';base64,';
+
+	function convertDataURIToBinary(dataURI) {
+	  var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+	  var base64 = dataURI.substring(base64Index);
+	  var raw = window.atob(base64);
+	  var rawLength = raw.length;
+	  var array = new Uint8Array(new ArrayBuffer(rawLength));
+	  var i=0;
+	  for(i = 0; i < rawLength; i++) {
+	    array[i] = raw.charCodeAt(i);
+	  }
+	  return array;
+	}
 }
