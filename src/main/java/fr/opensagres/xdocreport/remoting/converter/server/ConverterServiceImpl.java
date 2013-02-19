@@ -25,7 +25,6 @@
 package fr.opensagres.xdocreport.remoting.converter.server;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
@@ -85,13 +84,14 @@ public class ConverterServiceImpl
     @Path( "/convert" )
     public Response convert( final ConvertRequest request )
     {    	
-    	final byte[] flux =Base64.decodeBase64(request.document.getBytes());
+    	
    
         try
         {
             Assert.notNull( request.document, "file is required" );
             Assert.notNull( request.outputFormat, "outputFormat is required" );
             Assert.notNull( request.via, "via is required" );
+            final byte[] flux =Base64.decodeBase64(request.document.getBytes());
             // 1) Get the converter type to use
             ConverterTypeTo to = ConverterTypeTo.valueOf( request.outputFormat );
             if ( to == null )
