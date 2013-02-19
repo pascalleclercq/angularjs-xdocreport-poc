@@ -84,13 +84,13 @@ public class ConverterServiceImpl
     @Path( "/convert" )
     public Response convert( final ConvertRequest request )
     {    	
-    	
+    	Assert.notNull( request.document, "file is required" );
+        Assert.notNull( request.outputFormat, "outputFormat is required" );
+        Assert.notNull( request.via, "via is required" );
    
         try
         {
-            Assert.notNull( request.document, "file is required" );
-            Assert.notNull( request.outputFormat, "outputFormat is required" );
-            Assert.notNull( request.via, "via is required" );
+            
             final byte[] flux =Base64.decodeBase64(request.document.getBytes());
             // 1) Get the converter type to use
             ConverterTypeTo to = ConverterTypeTo.valueOf( request.outputFormat );
