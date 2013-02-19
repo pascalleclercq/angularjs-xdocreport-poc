@@ -25,6 +25,7 @@
 package fr.opensagres.xdocreport.remoting.converter.server;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
@@ -83,27 +84,9 @@ public class ConverterServiceImpl
     @Produces( MediaType.WILDCARD )
     @Path( "/convert" )
     public Response convert( final ConvertRequest request )
-    {
-//    	System.out.println(request);
-//    	System.err.println(request.document);
-    	
+    {    	
     	final byte[] flux =Base64.decodeBase64(request.document.getBytes());
-    /*	
-    	try {
-			FileOutputStream fout = new FileOutputStream("temp.ODT");
-			fout.write(flux);
-			fout.flush();
-			fout.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-*/
-    	
-
+   
         try
         {
             Assert.notNull( request.document, "file is required" );
@@ -172,15 +155,18 @@ public class ConverterServiceImpl
 
                 }
             };
+            
+            
             // 5) Create the JAX-RS response builder.
             ResponseBuilder responseBuilder = Response.ok( output, MediaType.valueOf( to.getMimeType() ) );
-           /* if ( request.download )
+            if ( request.download )
             {
                 // The converted document must be downloaded, add teh well content-disposition header.
                 String fileName = request.fileName;
                 responseBuilder.header( HttpHeaderUtils.CONTENT_DISPOSITION_HEADER,
                                         HttpHeaderUtils.getAttachmentFileName( getOutputFileName( fileName, to ) ) );
-            }*/
+            }
+            responseBuilder.header( "Accept-Charset","utf-8" );
             return responseBuilder.build();
 
         }
