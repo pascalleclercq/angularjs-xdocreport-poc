@@ -93,6 +93,7 @@
 					<sourceIncludes>
 						<include>**/*.js</include>
 					</sourceIncludes>
+					<jasmineTargetDir>${project.build.directory}/surefire</jasmineTargetDir>
 				</configuration>
 			</plugin>
         </plugins>
