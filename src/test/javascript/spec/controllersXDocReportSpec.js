@@ -34,6 +34,7 @@ describe('XDocReportCtrl', function() {
 		};
 		
 		//var aFileParts = ["<a id=\"a\"><b id=\"b\">hey!<\/b><\/a>"];
+		//'Blob' is not define (yet)
 		//var oMyBlob = new Blob(aFileParts, { "type" : "text\/xml" }); // the blob
 		var response = 'Dummy';
 		
