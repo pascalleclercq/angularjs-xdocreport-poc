@@ -8,6 +8,7 @@ function XDocReportCtrl($scope, $http) {
 			via : "XWPF"
 		}
 	};
+	$scope.result="about:blank";
 	var model = $scope.model;
 	$scope.setFiles = function(element) {
 		if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -39,10 +40,12 @@ function XDocReportCtrl($scope, $http) {
 			responseType : 'blob'
 		}).success(function(data, status, headers, config) {
 			var blobURLref = window.URL.createObjectURL(data);
-			document.getElementById('previewFrame').src = blobURLref;
+			//document.getElementById('previewFrame').src = blobURLref;
+			$scope.result=blobURLref;
 		}).error(function(data, status, headers, config) {
 			var blobURLref = window.URL.createObjectURL(data);
-			document.getElementById('previewFrame').src = blobURLref;
+			$scope.result=blobURLref;
+			//document.getElementById('previewFrame').src = blobURLref;
 		});
 	};
 
