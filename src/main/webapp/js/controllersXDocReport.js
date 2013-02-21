@@ -1,4 +1,4 @@
-'use strict';
+	'use strict';
 
 function XDocReportCtrl($scope, $http) {
 
@@ -40,12 +40,10 @@ function XDocReportCtrl($scope, $http) {
 			responseType : 'blob'
 		}).success(function(data, status, headers, config) {
 			var blobURLref = window.URL.createObjectURL(data);
-			//document.getElementById('previewFrame').src = blobURLref;
 			$scope.result=blobURLref;
 		}).error(function(data, status, headers, config) {
 			var blobURLref = window.URL.createObjectURL(data);
 			$scope.result=blobURLref;
-			//document.getElementById('previewFrame').src = blobURLref;
 		});
 	};
 
