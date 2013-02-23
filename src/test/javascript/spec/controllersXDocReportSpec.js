@@ -8,12 +8,11 @@ describe('XDocReportCtrl', function() {
 		scope = $rootScope;
 
 		this.addMatchers({
-			toBeGreaterThanOrEqualTo : function(expected) {
-				return this.actual >= expected;
-			},
-		equals : function(expected) {
-			return this.actual == expected;
-		}
+
+			startWith : function(expected) {
+				 var str= this.actual.toString();
+				return str.substr(0,5) == expected;
+			}
 		});
 
 		controller = $controller('XDocReportCtrl', {
@@ -23,27 +22,24 @@ describe('XDocReportCtrl', function() {
 
 	// testing controller
 
-	
 	it('should receive a dummy blob', inject(function($httpBackend) {
 		httpBackend = $httpBackend;
 		var data = {
-				convertRequest : {
-					outputFormat : "PDF",
-					via : "XWPF"
-				}
+			convertRequest : {
+				outputFormat : "PDF",
+				via : "XWPF"
+			}
 		};
-		
-		var aFileParts = ["<a id=\"a\"><b id=\"b\">hey!<\/b><\/a>"];
-		//'Blob' is not define (yet)
-		var response = new Blob(aFileParts, { "type" : "text\/xml" }); // the blob
-		//var response = 'Dummy';
-		//,{responseType : 'blob'}
-		httpBackend.expectPOST('jaxrs/convert', data).respond(200,response);
-		//scope.convert(controller.NOTE_ON, 77);
+		// 'Blob' is not define (yet)
+		var response = new Blob([ "dummy" ]); // the blob
+		// var response = 'Dummy';
+		// ,{responseType : 'blob'}
+		httpBackend.expectPOST('jaxrs/convert', data).respond(200, response);
+		// scope.convert(controller.NOTE_ON, 77);
 		scope.convert();
 		httpBackend.flush();
-		//var blobURLref = window.URL.createObjectURL(response);
-
-//temp:		expect(scope.result).equals("about:blank");
+		// var blobURLref = window.URL.createObjectURL(response);
+		
+		expect(scope.result).startWith("blob:");
 	}));
 });
