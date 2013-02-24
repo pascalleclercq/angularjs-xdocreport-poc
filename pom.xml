@@ -169,7 +169,7 @@
 			<activation>
 				<os>
 					<family>Linux</family>
-					<arch>x86</arch>
+					<arch>i686</arch>
 				</os>
 			</activation>
 			<properties>
