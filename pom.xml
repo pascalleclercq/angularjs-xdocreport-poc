@@ -164,5 +164,17 @@
 				<webDriverLocation>${basedir}/driver/linux64/chromedriver</webDriverLocation>
 			</properties>
 		</profile>
+		<profile>
+			<id>linux_x32</id>
+			<activation>
+				<os>
+					<family>Linux</family>
+					<arch>x86</arch>
+				</os>
+			</activation>
+			<properties>
+				<webDriverLocation>${basedir}/driver/linux32/chromedriver</webDriverLocation>
+			</properties>
+		</profile>
 	</profiles>
 </project>
