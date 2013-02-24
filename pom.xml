@@ -164,7 +164,7 @@
 				<webDriverLocation>${basedir}/driver/linux64/chromedriver</webDriverLocation>
 			</properties>
 		</profile>
-		<profile>
+		<!-- <profile>
 			<id>linux_x32</id>
 			<activation>
 				<os>
@@ -175,6 +175,6 @@
 			<properties>
 				<webDriverLocation>${basedir}/driver/linux32/chromedriver</webDriverLocation>
 			</properties>
-		</profile>
+		</profile> -->
 	</profiles>
 </project>
