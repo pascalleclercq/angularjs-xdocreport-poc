@@ -52,7 +52,6 @@ import fr.opensagres.xdocreport.core.document.DocumentKind;
 import fr.opensagres.xdocreport.core.io.IOUtils;
 import fr.opensagres.xdocreport.core.logging.LogUtils;
 import fr.opensagres.xdocreport.core.utils.Assert;
-import fr.opensagres.xdocreport.core.utils.HttpHeaderUtils;
 import fr.opensagres.xdocreport.remoting.domain.ConvertRequest;
 
 /**
@@ -69,7 +68,6 @@ public class ConverterServiceImpl
     public ConvertRequest view(  )
     {
     	ConvertRequest request= new ConvertRequest();
-    	request.download=false;
     	request.outputFormat=ConverterTypeTo.PDF.name();
     	request.via="XWPF";
     	
@@ -79,8 +77,8 @@ public class ConverterServiceImpl
 	
 	
     @POST
-    @Consumes( MediaType.WILDCARD )
-    @Produces( MediaType.WILDCARD )
+    @Consumes( MediaType.APPLICATION_JSON )
+    @Produces( MediaType.APPLICATION_OCTET_STREAM )
     @Path( "/convert" )
     public Response convert( final ConvertRequest request )
     {    	
@@ -159,14 +157,6 @@ public class ConverterServiceImpl
             
             // 5) Create the JAX-RS response builder.
             ResponseBuilder responseBuilder = Response.ok( output, MediaType.valueOf( to.getMimeType() ) );
-            if ( request.download )
-            {
-                // The converted document must be downloaded, add teh well content-disposition header.
-                String fileName = request.fileName;
-                responseBuilder.header( HttpHeaderUtils.CONTENT_DISPOSITION_HEADER,
-                                        HttpHeaderUtils.getAttachmentFileName( getOutputFileName( fileName, to ) ) );
-            }
-            responseBuilder.header( "Accept-Charset","utf-8" );
             return responseBuilder.build();
 
         }
